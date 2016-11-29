@@ -6,5 +6,26 @@
 
 
 {% block main %}
-<h1> ProAPI on RunnerPro </h1>
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">
+        RunnerPro
+      </a>
+      <p class="navbar-text navbar-right"><a href="https://github.com/RunnerPro/ProApi" class="navbar-link">https://github.com/RunnerPro/ProApi</a></p>
+    </div>
+  </div>
+</nav>
+<div class="page-header">
+  <h1>ProApi <small>RESTful Mobile Backend</small></h1>
+</div>
+<div>
+</div>
+<div class="list-group">
+  <a href="/api/v1.0/records" class="list-group-item">GET all records: /api/v1.0/records</a>
+  <a href="/api/v1.0/records/1" class="list-group-item">GET a specific record: /api/v1.0/records/1</a>
+  <a href="#" class="list-group-item disabled">POST a new record: /api/v1.0/records?data="{key:value}"</a>
+  <a href="#" class="list-group-item">UPDATE a record: /api/v1.0/records/1</a>
+  <a href="#" class="list-group-item">DELETE a record: /api/v1.0/records/1</a>
+</div>
 {% endblock %}

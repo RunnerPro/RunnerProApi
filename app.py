@@ -26,10 +26,10 @@ api.add_resource(RecordResource, '/api/v1.0/records/<string:id>', endpoint='reco
 # Routing for your application.
 ###
 
-# @app.route('/')
-# def home():
-#     """Render website's home page."""
-#     return render_template('home.html')
+@app.route('/')
+def home():
+     """Render website's home page."""
+     return render_template('home.html')
 
 
 # @app.route('/about/')
