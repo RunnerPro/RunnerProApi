@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+
+{% block js %}
+<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script>
+<script>
+
+  var echo = echo || {};
+
+  echo.client = echo.client || {};
+
+  echo.client.FIREBASE_CFG = {
+    apiKey: "AIzaSyDJVM_hxb1DkMo1olEUgvNXwvJfnncpKPA",
+    authDomain: "yb-splasher-7465c.firebaseapp.com",
+    databaseURL: "https://yb-splasher-7465c.firebaseio.com",
+    storageBucket: "yb-splasher-7465c.appspot.com",
+    messagingSenderId: "1045386859106"
+  };
+
+  echo.client.isSignedIn = false;
+  echo.client.authToken = null;
+
+  // Firebase log-in
+  echo.client.configureFirebaseLogin = function() {
+
+  	console.log("Firebase login configuration");
+
+  	firebase.initializeApp(echo.client.FIREBASE_CFG);
+
+  	firebase.auth().onAuthStateChanged(function(user) {
+  		console.log("Auth state changed");
+  	
+  		if (user) {
+  			console.log("User is present");
+
+  			document.querySelector('#logged-out').hidden = true;
+
+  			var name = user.displayName;
+  			var welcomeName = name ? name : user.email;
+
+  			console.log("Getting user token");
+
+  			user.getToken().then(function(idToken) {
+  				console.log("Inside getToken handler");
+  				echo.client.authToken = idToken;
+  				echo.client.isSignedIn = true;
+  				document.querySelector('#user').textContent = welcomeName;
+  				document.querySelector('#token').value = idToken;
+  				document.querySelector('#logged-in').hidden = false;
+  				console.log("Done getToken handler");
+  			});
+  		} else {
+  			console.log("No user, not signed in");
+  			echo.client.isSignedIn = false;
+  			echo.client.authToken = null;
+  			document.querySelector('#logged-in').hidden = true;
+  			document.querySelector('#logged-out').hidden = false;
+  			console.log("Not signed in done");
+  		}
+  	});
+
+  	console.log("Firebase login configured");
+  };
+
+  // Firebase log-in widget
+  echo.client.configureFirebaseLoginWidget = function() {
+  	var uiConfig = {
+  		'signInSuccessUrl' : '/firebase',
+  		'signInOptions' : [ firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+  		// firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+  		firebase.auth.EmailAuthProvider.PROVIDER_ID ]
+  	};
+
+  	var ui = new firebaseui.auth.AuthUI(firebase.auth());
+  	ui.start('#firebaseui-auth-container', uiConfig);
+  };
+
+  window.onload = function() {
+    echo.client.configureFirebaseLogin();
+  	echo.client.configureFirebaseLoginWidget();
+  };
+ 
+</script>
+{% endblock %}
+
+{% block css %}
+<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/live/0.5/firebase-ui-auth.css">
+{% endblock %}
+
+{% block main %}
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#">
+        RunnerPro
+      </a>
+    </div>
+  </div>
+</nav>
+<div class="page-header">
+  <h1>ProApi <small>Firebase Auth Demo</small></h1>
+</div>
+<div>
+</div>
+  <div>
+    
+    <div id="logged-in">
+      <h2>
+        Welcome, <span id="user"></span>!
+      </h2>
+      <h3>Enter a message to access secured echo service</h3>
+      <div id="form">
+        <form action="/echo" method="post">
+          <div class="form-group">
+            <textarea id="message-content" name="message"></textarea>
+            <input id="token" name="token"></input>
+          </div>
+          <div class="form-group">
+            <input type="submit" id="send-message">Send message</button>
+            <button id="sign-out">Sign out</button>
+          </div>
+        </form>
+      </div>
+      <div id="response-container"></div>
+    </div>
+
+    <div id="logged-out">
+      <h3>Please sign in below:</h3>
+      <div id="firebaseui-auth-container"></div>
+    </div>
+    
+  </div>
+{% endblock %}
+
